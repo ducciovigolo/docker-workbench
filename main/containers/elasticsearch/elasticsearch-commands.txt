@@ -1,0 +1,31 @@
+CREATE INDEX
+curl -k -uelastic:fggbSpUfqo*C-gXJSfGm -XPUT https://elasticsearch:9200/my-index
+curl -k -uelastic:fggbSpUfqo*C-gXJSfGm -XGET https://elasticsearch:9200/_cat/indices?v
+
+ 
+INSERT DOCUMENTS INTO THE INDEX
+curl -k -uelastic:fggbSpUfqo*C-gXJSfGm -XPOST https://elasticsearch:9200/my-index/_doc/1 \
+    -H 'Content-Type: application/json' \
+    -d '{"city":"New York"}'
+
+curl -k -uelastic:fggbSpUfqo*C-gXJSfGm -XPOST https://elasticsearch:9200/my-index/_doc/2 \
+    -H 'Content-Type: application/json' \
+    -d '{"city":"Paris"}'
+
+curl -k -uelastic:fggbSpUfqo*C-gXJSfGm -XPOST https://elasticsearch:9200/my-index/_doc/3 \
+    -H 'Content-Type: application/json' \
+    -d '{"city":"London"}'
+
+ 
+READ FIELDS MAPPING FOR THE INDEX
+curl -k -uelastic:fggbSpUfqo*C-gXJSfGm -XGET https://elasticsearch:9200/my-index/_mapping?pretty
+
+ 
+GET DOCUMENT BY ID
+curl -k -uelastic:fggbSpUfqo*C-gXJSfGm -XGET https://elasticsearch:9200/my-index/_doc/1?pretty
+
+SEARCH ALL DOCUMENTS
+curl -k -uelastic:fggbSpUfqo*C-gXJSfGm -XGET https://elasticsearch:9200/my-index/_search?pretty
+
+SEARCH USING QUERY PARAMETER
+curl -k -uelastic:fggbSpUfqo*C-gXJSfGm -XGET https://elasticsearch:9200/my-index/_search?q=city:new

@@ -1,0 +1,27 @@
+
+docker network create wordpress
+
+docker run \
+    --network wordpress \
+    --name mysql57 \
+    -e MYSQL_ROOT_PASSWORD=wp-password \
+    -e MYSQL_DATABASE=wp-1 \
+    -e MYSQL_USER=wp-1 \
+    -e MYSQL_PASSWORD=wp-1-secret \
+    -d \
+    mysql:5.7
+
+docker run \
+    -p8081:80 \
+    --network wordpress \
+    --name phpmyadmin-mysql57 \
+    -e PMA_HOST=mysql57 \
+    -d \
+    phpmyadmin/phpmyadmin
+
+docker run \
+    -p8082:80 \
+    --network wordpress \
+    --name wordpress54 \
+    -d \
+    wordpress:5.4

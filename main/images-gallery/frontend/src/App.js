@@ -6,16 +6,15 @@ import ImageCard from './components/ImageCard';
 import Welcome from './components/Welcome';
 import { Container, Row, Col } from 'react-bootstrap';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5050';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5050';
 
 const App = () => {
   const [word, setWord] = useState('');
   const [images, setImages] = useState(() => {
     const result = [];
-    fetch(`${API_URL}/load-images`)
+    fetch(`${API_URL}/images`)
       .then((res) => res.json())
       .then((data) => {
-        console.log('load-images => ', data, typeof data);
         for (var i = 0; i < data.length; i++) {
           result.push(data[i]);
         }
@@ -28,13 +27,21 @@ const App = () => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    fetch(`${API_URL}/new-image?query=${word}`)
+    fetch(`${API_URL}/random-image?query=${word}`)
       .then((res) => res.json())
       .then((data) => {
+        if (data.errors) {
+          console.log(
+            `${API_URL}/random-image?query=${word}`,
+            ' => ',
+            data.errors
+          );
+          return;
+        }
         var json = { ...data, title: word };
         setImages([json, ...images]);
         setTimeout(() => {
-          fetch(`${API_URL}/put-image`, {
+          fetch(`${API_URL}/images`, {
             method: 'POST',
             body: JSON.stringify(json),
             headers: {
@@ -53,6 +60,13 @@ const App = () => {
 
   const handleDeleteImage = (id) => {
     setImages(images.filter((image) => image.id !== id));
+    setTimeout(() => {
+      fetch(`${API_URL}/images/${id}`, {
+        method: 'DELETE',
+      }).catch((err) => {
+        console.log(err);
+      });
+    }, 0);
   };
 
   return (

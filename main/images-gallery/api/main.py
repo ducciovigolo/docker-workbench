@@ -32,7 +32,7 @@ app.db = pymongo.MongoClient(CONFIG_MONGODB_SERVER,
                              password=CONFIG_MONGODB_ADMINPASSWORD)\
                                  ['images-gallery']
 
-@app.route("/new-image")
+@app.route("/random-image")
 def new_image():
     word = request.args.get("query")
     headers = {"Accept-Version": "v1", "Authorization": "Client-ID " + UNSPLASH_KEY}
@@ -42,13 +42,18 @@ def new_image():
     data = response.json()
     return data
 
-@app.route("/load-images")
+@app.route("/images")
 def load_images():
     images = app.db.images.find()
     data = dumps(list(images))
     return data
 
-@app.route("/put-image", methods=['POST'])
+@app.route("/images/<id>", methods=['DELETE'])
+def del_image(id):
+    image = app.db.images.delete_one({'id': id})
+    return dumps(id), 200
+
+@app.route("/images", methods=['POST'])
 def put_image():
     if not request.json:
         abort(400)

@@ -10,21 +10,21 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5050';
 
 const App = () => {
   const [word, setWord] = useState('');
-  const [images, setImages] = useState([]);
-
-  const loadSavedImages = () => {
+  const [images, setImages] = useState(() => {
+    const result = [];
     fetch(`${API_URL}/load-images`)
       .then((res) => res.json())
       .then((data) => {
-        console.log('duccio');
-        console.log([...data]);
-        //setImages([...data]);
-        return data;
+        console.log('load-images => ', data, typeof data);
+        for (var i = 0; i < data.length; i++) {
+          result.push(data[i]);
+        }
       })
       .catch((err) => {
         console.log(err);
       });
-  };
+    return result;
+  });
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -54,8 +54,6 @@ const App = () => {
   const handleDeleteImage = (id) => {
     setImages(images.filter((image) => image.id !== id));
   };
-
-  //setImages(loadSavedImages());
 
   return (
     <div>

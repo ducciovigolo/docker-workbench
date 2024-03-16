@@ -12,12 +12,38 @@ const App = () => {
   const [word, setWord] = useState('');
   const [images, setImages] = useState([]);
 
+  const loadSavedImages = () => {
+    fetch(`${API_URL}/load-images`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('duccio');
+        console.log([...data]);
+        //setImages([...data]);
+        return data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     fetch(`${API_URL}/new-image?query=${word}`)
       .then((res) => res.json())
       .then((data) => {
-        setImages([{ ...data, title: word }, ...images]);
+        var json = { ...data, title: word };
+        setImages([json, ...images]);
+        setTimeout(() => {
+          fetch(`${API_URL}/put-image`, {
+            method: 'POST',
+            body: JSON.stringify(json),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }).catch((err) => {
+            console.log(err);
+          });
+        }, 0);
       })
       .catch((err) => {
         console.log(err);
@@ -28,6 +54,8 @@ const App = () => {
   const handleDeleteImage = (id) => {
     setImages(images.filter((image) => image.id !== id));
   };
+
+  //setImages(loadSavedImages());
 
   return (
     <div>
